@@ -1,3 +1,5 @@
+import pickle
+
 import pygame
 import neat
 import time
@@ -92,7 +94,7 @@ class Bird:
 
 class Pipe:
     GAP = 200
-    VEL = 10
+    VEL = 5
 
     def __init__(self, x):
         self.x = x
@@ -269,7 +271,18 @@ def run(config_path):
     p.add_reporter(neat.StdOutReporter(True))
     p.add_reporter(neat.StatisticsReporter())
 
-    winner = p.run(main, 50)
+    newBird = input('New bird? (y/n):')
+
+    if newBird == 'n':
+        with open('winner.pkl', "rb") as f:
+            genome = pickle.load(f)
+        genomes = [(1, genome)]
+        main(genomes, config)
+    else:
+        winner = p.run(main, 50)
+        with open("winner.pkl", "wb") as f:
+            pickle.dump(winner, f)
+            f.close()
 
 
 if __name__ == "__main__":
